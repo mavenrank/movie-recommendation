@@ -38,14 +38,14 @@ const Movie = ({ title, rating, posterUrl, year }) => {
                         <div className="rating">
                             Your Rating : {userRating ? userRating : 0}★
                         </div>
-                        <button onClick={() => setUserRating(0)} style={{ height: 30, width: 50 }}>
+                        <button onClick={() => setUserRating(0)} style={{ height: 20, width: 50 }}>
                             Reset
                         </button>
                     </div>
                 </div>
             </div>: <></> }
             <div className="movie-details">
-                <div>{title}</div>
+                <div className="movie-title">{title}</div>
                 <div>{year}</div>
             </div>
         </div>
