@@ -116,7 +116,7 @@ const MovieCarousel = () => {
             
             {movies.map((movie, index) => {
                 return (
-                    <Movie key={index} title={movie.title} rating={movie.rating} year={movie.year} />
+                    <Movie key={index} id={movie.id} title={movie.title} rating={movie.rating} year={movie.year} />
                 )
             })}
         </div>

@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import { FaRegStar } from "react-icons/fa6";
+import { Link } from "react-router";
 
-const Movie = ({ title, rating, posterUrl, year }) => {
+const Movie = ({ id, title, rating, posterUrl, year }) => {
 
     const [userRating, setUserRating] = useState(0);
     const [hover, setHover] = useState(0);
     const [posterHover, setPosterHover] = useState(0);
     return (
-        <div className="movie" onMouseEnter={() => setPosterHover(1)} onMouseLeave={() => setPosterHover(0)}>
-            <div className="movie-poster">
+        <div className="movie" >
+            <div className="movie-poster" onMouseEnter={() => setPosterHover(1)} onMouseLeave={() => setPosterHover(0)}>
                 <img src={posterUrl} ></img>
             </div>
-            {posterHover ?  <div className="ratings-overlay">
+            {posterHover ?  <div className="ratings-overlay" onMouseEnter={() => setPosterHover(1)} onMouseLeave={() => setPosterHover(0)}>
                 <div className="ratings">
                     <div className="star-rating">
                         <div style={{fontSize:24}}>{rating}★</div>
@@ -43,11 +43,13 @@ const Movie = ({ title, rating, posterUrl, year }) => {
                         </button>
                     </div>
                 </div>
-            </div>: <></> }
-            <div className="movie-details">
-                <div className="movie-title">{title}</div>
-                <div>{year}</div>
-            </div>
+            </div> : <></>}
+            <Link to={`/movie/${id}`} style={{textDecoration:'none', color:'inherit'}}>
+                <div className="movie-details">
+                    <div className="movie-title">{title}</div>
+                    <div>{year}</div>
+                </div>
+            </Link>
         </div>
     );
 }
