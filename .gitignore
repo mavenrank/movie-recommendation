@@ -24,7 +24,7 @@ dist-ssr
 *.sw?
 
 # Ignore virtual environment folder
-.venv/
+venv/
 
 # Ignore Jupyter Notebook checkpoints
 .ipynb_checkpoints/
