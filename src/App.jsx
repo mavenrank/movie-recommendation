@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import About from "./components/About";
 import Error from "./components/Error";
 import IndividualMovie from "./components/IndividualMovie";
+import Profile from "./components/Profile";
 
 function App() {
     return (

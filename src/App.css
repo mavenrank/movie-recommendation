@@ -61,6 +61,11 @@ body {
     font-size: 1.9em;
 }
 
+.right-buttons{
+    display: flex;
+    flex-direction: row;
+}
+
 .user-name-login{
     display: flex;
     flex-direction: row;
@@ -252,4 +257,17 @@ body {
 .bn3:hover {
     color: black;
     background-color: rgb(255, 255, 255);
+}
+
+.profile-photo-and-name{
+    background-color: var(--salmon);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+}
+
+.profile-photo{
+    height: 150px;
+    width: 150px;
 }

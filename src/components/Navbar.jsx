@@ -1,5 +1,6 @@
 import React from "react";
 import { BiSolidCameraMovie } from "react-icons/bi";
+import { MdHome } from "react-icons/md";
 import { Outlet } from "react-router";
 function Navbar() {
     return (
@@ -12,8 +13,17 @@ function Navbar() {
                     <div className="brand">Cine</div>
                 </div>
                 <div className="centre-section"></div>
-                <div className="user-name-login">
-                    <a href="/login" className="bn3">Login</a>
+                <div className="right-buttons">
+                    <div className="home-button">
+                        <a href="/" className="bn3 ">
+                            <MdHome />
+                        </a>
+                    </div>
+                    <div className="user-name-login">
+                        <a href="/profile" className="bn3">
+                            Profile
+                        </a>
+                    </div>
                 </div>
             </div>
             <Outlet />
