@@ -9,7 +9,7 @@
 
 @font-face {
     font-family: Geist;
-    src: url(./assets/Geist[wght].ttf);
+    src: url(/assets/Geist[wght].ttf);
 }
 
 * {
@@ -270,4 +270,30 @@ body {
 .profile-photo{
     height: 150px;
     width: 150px;
+}
+
+
+/* Individual Movie Page css*/
+.individual-movie-page{
+    margin-left: 15%;
+    margin-right: 15%;
+    color: var(--air-force-blue);
+
+}
+
+.individual-movie-poster-img{
+    height: 300px;
+    width: 200px;
+}
+
+.individual-movie-title-and-poster{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.individual-movie-title{
+    font-weight: bold;
+    margin-right: 30%;
 }

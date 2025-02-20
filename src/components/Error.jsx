@@ -10,7 +10,7 @@ function Error() {
                     <p>404 Page Not Found</p>
                 </div>
                 <div className="error-back-to-home-div">
-                    <a href="/" class="bn3">
+                    <a href="/" classname="bn3">
                         Back to Home
                     </a>
                 </div>

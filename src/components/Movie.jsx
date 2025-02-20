@@ -44,7 +44,7 @@ const Movie = ({ id, title, rating, posterUrl, year }) => {
                     </div>
                 </div>
             </div> : <></>}
-            <Link to={`/movie/${id}`} style={{textDecoration:'none', color:'inherit'}}>
+            <Link to={`/movie/${id}`} state={{id, title, rating, posterUrl, year}} style={{textDecoration:'none', color:'inherit'}}>
                 <div className="movie-details">
                     <div className="movie-title">{title}</div>
                     <div>{year}</div>
