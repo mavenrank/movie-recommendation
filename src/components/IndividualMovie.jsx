@@ -1,27 +1,31 @@
 import React from "react";
-import { useLocation, useParams } from "react-router";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 
 function IndividualMovie() {
     const location = useLocation();
     const { id } = useParams();
-    const {title, rating, posterUrl, year } = location.state;
+    const navigate = useNavigate();
+
+    // Redirect if accessed without state (e.g., via direct URL)
+    if (!location.state) {
+        navigate("/");
+        return null;
+    }
+
+    const { title, rating, posterUrl, year } = location.state;
+
     return (
         <div className="individual-movie-page">
-            <div className="individual-movie-title-and-poster">
-                <div className="individual-movie-poster">
-                    <img src="/assets/image.png" alt="Poster" className="individual-movie-poster-img"/>
+            <div className="movie-container">
+                <div className="movie-poster">
+                    <img src={posterUrl} alt={title} className="poster-img" />
                 </div>
-                <div className="individual-movie-title">
-                    <h1>{title}</h1>
-                </div>
-            </div>
-            <div className="individual-movie-details">
-                <div className="">
-                    {rating}
-                    {year}
+                <div className="movie-info">
+                    <h1 className="movie-title">{title}</h1>
+                    <p className="movie-year">🗓️ Year: {year}</p>
+                    <p className="movie-rating">⭐ Rating: {rating}</p>
                 </div>
             </div>
-
         </div>
     );
 }

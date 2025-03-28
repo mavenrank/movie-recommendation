@@ -2,6 +2,7 @@ import React from "react";
 import MovieCarousel from "./MovieCarousel";
 
 function MainPage() {
+    
     return (
         <div className="mainpage">
             <div className="mainpage-title">

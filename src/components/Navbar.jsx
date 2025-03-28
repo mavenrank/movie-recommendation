@@ -10,7 +10,7 @@ function Navbar() {
                     <div className="logo-div">
                         <BiSolidCameraMovie className="logo" />
                     </div>
-                    <div className="brand">Cine</div>
+                    <div className="brand">MovieFlix</div>
                 </div>
                 <div className="centre-section"></div>
                 <div className="right-buttons">
