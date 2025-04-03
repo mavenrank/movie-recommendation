@@ -5,68 +5,7 @@ import Movie from "./Movie";
 import { auth, db } from "../firebase";
 import { getAuth } from "firebase/auth";
 import { doc, setDoc, getDocs, collection } from "firebase/firestore";
-const topMoviesByGenre = {
-    Action: {
-        tt0468569: "The Dark Knight",
-        tt1375666: "Inception",
-        tt0133093: "The Matrix",
-        tt0167260: "The Lord of the Rings: The Return of the King",
-        tt0120737: "The Lord of the Rings: The Fellowship of the Ring",
-        tt0167261: "The Lord of the Rings: The Two Towers",
-        tt0080684: "The Empire Strikes Back",
-        tt0234215: "The Matrix Reloaded",
-        tt0242653: "The Matrix Revolutions",
-        tt0172495: "Gladiator",
-    },
-    Drama: {
-        tt0111161: "The Shawshank Redemption",
-        tt0068646: "The Godfather",
-        tt0071562: "The Godfather Part II",
-        tt0050083: "12 Angry Men",
-        tt0108052: "Schindler's List",
-        tt0110912: "Pulp Fiction",
-        tt0137523: "Fight Club",
-        tt0109830: "Forrest Gump",
-        tt0167260: "The Lord of the Rings: The Return of the King",
-        tt0120737: "The Lord of the Rings: The Fellowship of the Ring",
-    },
-    Comedy: {
-        tt0118799: "Life Is Beautiful",
-        tt0088763: "Back to the Future",
-        tt0027977: "Modern Times",
-        tt0021749: "City Lights",
-        tt1675434: "The Intouchables",
-        tt0032553: "The Great Dictator",
-        tt0053604: "The Apartment",
-        tt0053291: "Some Like It Hot",
-        tt0211915: "Amélie",
-        tt0435761: "Toy Story 3",
-    },
-    Thriller: {
-        tt0102926: "The Silence of the Lambs",
-        tt0114369: "Se7en",
-        tt6751668: "Parasite",
-        tt0482571: "The Prestige",
-        tt0209144: "Memento",
-        tt0407887: "The Departed",
-        tt0054215: "Psycho",
-        tt0110413: "Léon: The Professional",
-        tt0114814: "The Usual Suspects",
-        tt0120586: "American History X",
-    },
-    SciFi: {
-        tt1375666: "Inception",
-        tt0133093: "The Matrix",
-        tt0816692: "Interstellar",
-        tt0080684: "The Empire Strikes Back",
-        tt0076759: "Star Wars",
-        tt0234215: "The Matrix Reloaded",
-        tt0242653: "The Matrix Revolutions",
-        tt1856101: "Blade Runner 2049",
-        tt0482571: "The Prestige",
-        tt0088763: "Back to the Future",
-    },
-};
+
 
 
 const FreshSetup = () => {
@@ -76,11 +15,46 @@ const FreshSetup = () => {
     const [ratedMovies, setRatedMovies] = useState([]);
     const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
+    const [moviesByGenre, setMoviesByGenre] = useState({});
+
     useEffect(() => {
         const fetchMovies = async () => {
-            const moviePromises = Object.entries(topMoviesByGenre).flatMap(
-                ([genre, movies]) =>
-                    Object.entries(movies).map(async ([title, imdbId]) => {
+            try {
+                const genres = [
+                    "Action",
+                    "Comedy",
+                    "Drama",
+                    "Horror",
+                    "Sci-Fi",
+                ];
+
+                // Fetch IMDb IDs for each genre
+                const genreMoviePromises = genres.map(async (genre) => {
+                    const response = await fetch(
+                        `http://localhost:8000/top_movies_by_genre/${genre}`
+                    );
+                    if (!response.ok) {
+                        throw new Error(`Error fetching movies for ${genre}`);
+                    }
+                    const data = await response.json();
+                    console.log(
+                        `Fetched IMDb IDs for ${genre}:`,
+                        data.imdb_ids
+                    );
+                    return { [genre]: data.imdb_ids };
+                });
+
+                const genreMoviesArray = await Promise.all(genreMoviePromises);
+                const moviesByGenre = Object.assign({}, ...genreMoviesArray);
+                setMoviesByGenre(moviesByGenre);
+
+                console.log("Movies by Genre:", moviesByGenre);
+
+                // Fetch TMDB details for each movie
+                const movieDetailsPromises = Object.entries(
+                    moviesByGenre
+                ).flatMap(([genre, imdbIds]) =>
+                    imdbIds.map(async (imdbId) => {
                         try {
                             const response = await fetch(
                                 `https://api.themoviedb.org/3/find/${imdbId}?external_source=imdb_id&language=en`,
@@ -96,7 +70,8 @@ const FreshSetup = () => {
                                 const movie = data.movie_results[0];
                                 return {
                                     id: movie.id,
-                                    title,
+                                    imdbID: imdbId, // Ensure we track IMDb ID
+                                    title: movie.title,
                                     posterUrl: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
                                     year: movie.release_date
                                         ? movie.release_date.split("-")[0]
@@ -105,22 +80,38 @@ const FreshSetup = () => {
                                 };
                             }
                         } catch (error) {
-                            console.error("Error fetching movie:", error);
+                            console.error(
+                                "Error fetching movie details:",
+                                error
+                            );
                         }
                         return null;
                     })
-            );
+                );
 
-            const fetchedMovies = (await Promise.all(moviePromises)).filter(
-                Boolean
-            );
-            setMovies(fetchedMovies);
+                const fetchedMovies = (
+                    await Promise.all(movieDetailsPromises)
+                ).filter(Boolean);
+                setMovies(fetchedMovies);
+
+                // Organize movies by genre (no need to slice again)
+                const moviesByGenreFinal = genres.reduce((acc, genre) => {
+                    acc[genre] = fetchedMovies.filter(
+                        (movie) => movie.genre === genre
+                    );
+                    return acc;
+                }, {});
+
+                setMoviesByGenre(moviesByGenreFinal);
+                console.log("Final Movies By Genre:", moviesByGenreFinal);
+            } catch (error) {
+                console.error("Error fetching movies:", error);
+            }
         };
 
         fetchMovies();
     }, []);
 
-    // Handle rating change
     const handleRatingChange = (movieId, rating) => {
         console.log(
             `Updating rating: Movie ID = ${movieId}, Rating = ${rating}`
@@ -161,20 +152,20 @@ const FreshSetup = () => {
     };
 
 
-    useEffect(() => {
-        const user = auth.currentUser;
-        const needsSetup = localStorage.getItem("needsSetup") === "true";
+    // useEffect(() => {
+    //     const user = auth.currentUser;
+    //     const needsSetup = localStorage.getItem("needsSetup") === "true";
 
-        if (!user) {
-            navigate("/login");
-            return;
-        }
+    //     if (!user) {
+    //         navigate("/login");
+    //         return;
+    //     }
 
-        if (!needsSetup) {
-            navigate("/MainPage");
-            return;
-        }
-    }, [navigate]);
+    //     if (!needsSetup) {
+    //         navigate("/MainPage");
+    //         return;
+    //     }
+    // }, [navigate]);
 
     // const handleSubmit = async () => {
     //     try {
@@ -212,8 +203,8 @@ const FreshSetup = () => {
             const snapshot = await getDocs(userCollection);
             const userCount = snapshot.size; // Number of existing users
 
-            // Generate user ID starting from 1300000
-            const userId = 1300000 + userCount;
+            // Generate user ID starting from 130000
+            const userId = 130000 + userCount;
 
             // Prepare ratings object
             const ratings = {};
@@ -260,23 +251,21 @@ const FreshSetup = () => {
             <h2>Rate Movies to Get Better Recommendations!</h2>
 
             <div className="freshsetup-carousel-section">
-                {Object.keys(topMoviesByGenre).map((genre, index) => (
+                {Object.keys(moviesByGenre).map((genre, index) => (
                     <div key={index} className="freshsetup-genre">
                         <h3>{genre}</h3>
                         <div className="movie-carousel">
-                            {movies
-                                .filter((movie) => movie.genre === genre)
-                                .map((movie) => (
-                                    <Movie
-                                        key={movie.id}
-                                        id={movie.id}
-                                        title={movie.title}
-                                        rating={ratings[movie.id] || 0}
-                                        posterUrl={movie.posterUrl}
-                                        year={movie.year}
-                                        onRate={handleRatingChange}
-                                    />
-                                ))}
+                            {(moviesByGenre[genre] || []).map((movie) => (
+                                <Movie
+                                    key={movie.imdbID} // Use IMDb ID as key
+                                    id={movie.imdbID} // Pass IMDb ID instead of TMDB ID
+                                    title={movie.title}
+                                    rating={ratings[movie.imdbID] || 0} // Retrieve rating using IMDb ID
+                                    posterUrl={movie.posterUrl}
+                                    year={movie.year}
+                                    onRate={handleRatingChange}
+                                />
+                            ))}
                         </div>
                     </div>
                 ))}

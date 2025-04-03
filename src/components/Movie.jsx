@@ -1,18 +1,29 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
 
+// Store ratings for the user
+const userRatings = {
+    userId: 1300000,
+    ratings: {},
+};
+
 const Movie = ({ id, title, rating, posterUrl, year, onRate }) => {
-    const [userRating, setUserRating] = useState(0);
+    // Initialize rating from userRatings or prop
+    const [userRating, setUserRating] = useState(
+        userRatings.ratings[id] || rating || 0
+    );
     const [hover, setHover] = useState(0);
     const [posterHover, setPosterHover] = useState(0);
 
     const handleRatingClick = (star) => {
         setUserRating(star);
+        userRatings.ratings[id] = star; // Store rating in userRatings object
+        console.log("Updated Ratings:", userRatings); // Debugging
         if (onRate) {
-            onRate(id, star); // Notify FreshSetup.jsx
+            onRate(id, star);
         }
     };
-
+    
     return (
         <div className="movie">
             <div
@@ -22,6 +33,7 @@ const Movie = ({ id, title, rating, posterUrl, year, onRate }) => {
             >
                 <img src={posterUrl} alt={title} />
             </div>
+
             {posterHover ? (
                 <div
                     className="ratings-overlay"
@@ -30,7 +42,7 @@ const Movie = ({ id, title, rating, posterUrl, year, onRate }) => {
                 >
                     <div className="ratings">
                         <div className="star-rating">
-                            <div style={{ fontSize: 24 }}>{rating}★</div>
+                            <div style={{ fontSize: 24 }}>{userRating}★</div>
                             <div
                                 className="stars"
                                 style={{
@@ -58,7 +70,7 @@ const Movie = ({ id, title, rating, posterUrl, year, onRate }) => {
                                 ))}
                             </div>
                             <div className="rating">
-                                Your Rating : {userRating ? userRating : 0}★
+                                Your Rating: {userRating ? userRating : 0}★
                             </div>
                             <button
                                 onClick={() => handleRatingClick(0)}
@@ -70,6 +82,7 @@ const Movie = ({ id, title, rating, posterUrl, year, onRate }) => {
                     </div>
                 </div>
             ) : null}
+
             <Link
                 to={`/movie/${id}`}
                 state={{ id, title, rating, posterUrl, year }}

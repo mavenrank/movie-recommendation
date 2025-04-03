@@ -10,8 +10,21 @@ import IndividualMovie from "./components/IndividualMovie";
 import Error from "./components/Error";
 import FreshSetup from "./components/FreshSetup";
 import ProtectedRoute from "./components/ProtectedRoute"; // Import the ProtectedRoute
+import Recommendations from "./components/Recommendations";
+import { useState } from "react";
 
 function App() {
+    const [userRating, setUserRating] = useState([]);
+    const callback = (imdbId, rating) => {
+        console.log(`Rated movie ${imdbId} with rating ${rating}`);
+        window.alert(`Rated movie ${imdbId} with rating ${rating}`);
+        setUserRating((prevRatings) => {
+            const updatedRatings = { ...prevRatings, [imdbId]: rating };
+            // localStorage.setItem("userRatings", JSON.stringify(updatedRatings));
+            return updatedRatings;
+        });
+    };
+    console.log("User Ratings:", userRating); // Debugging
     return (
         <BrowserRouter>
             <Routes>
@@ -19,10 +32,16 @@ function App() {
                 <Route path="/" element={<LandingPage />} />
 
                 {/* Other Pages (With Navbar) */}
-                <Route path="/" element={<Navbar />}>
-                    <Route path="/mainpage" element={<MainPage />} />
+                <Route element={<Navbar userRatings={userRating} />}>
+                    <Route
+                        path="/mainpage"
+                        element={<MainPage callback_handler={callback} />}
+                    />
                     <Route path="/about" element={<About />} />
-
+                    <Route
+                        path="/recommendations"
+                        element={<Recommendations />}
+                    />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/movie/:id" element={<IndividualMovie />} />
                 </Route>

@@ -264,19 +264,6 @@ body {
     background-color: rgb(255, 255, 255);
 }
 
-.profile-photo-and-name{
-    background-color: var(--salmon);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-}
-
-.profile-photo{
-    height: 150px;
-    width: 150px;
-}
-
 
 /* Individual Movie Page css*/
 .individual-movie-page{
@@ -641,4 +628,80 @@ body {
     font-style: italic;
     text-align: center;
     margin-top: 10px;
+}
+
+/* Center everything inside the profile page */
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Profile section */
+.profile-photo-and-name {
+    background-color: var(--salmon);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 900px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile Image */
+.profile-photo {
+    height: 120px;
+    width: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid white;
+    margin-right: 20px;
+}
+
+/* Text styling inside profile section */
+.profile-photo-and-name h1 {
+    font-size: 26px;
+    font-weight: bold;
+    color: black;
+    margin: 0;
+}
+
+/* Sections (Movies & Model Selection) */
+.recently-rated-movies, 
+.select-model-radio {
+    width: 100%;
+    max-width: 900px;
+    margin-top: 25px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Model selection radio buttons */
+.select-model-radio label {
+    display: block;
+    margin: 12px 0;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.select-model-radio input[type="radio"] {
+    margin-right: 10px;
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+/* Recommendations Page */
+h2{
+    color: white;
 }
